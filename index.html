@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fi">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Jukon Juomapeli</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/juomapeli.css">
+</head>
+
+<body class="">
+	<div class="container mt-1 mt-md-5">
+		<div class="row">
+			<div class="col-md-3 text-center">
+				<img src="img/cards/cover.png" class="img-fluid" id="card-img" onclick="newCard()">
+				<p class="text-center mt-2" id="deck-info">Napauta kuvaa tai paina välilyöntiä</p>
+			</div>
+			<div class="col-md-9">
+				<ul class="nav nav-tabs nav-justified " id="rules-nav" role="tablist">
+					<li class="nav-item" id="rules-nav-editor" role="presentation">
+						<button class="nav-link" data-bs-toggle="tab" data-bs-target="#rules-content-editor" type="button" role="tab">Editori</button>
+					</li>
+					<li class="nav-item" id="rules-nav-settings" role="presentation">
+						<button class="nav-link" data-bs-toggle="tab" data-bs-target="#rules-content-settings" type="button" role="tab">Asetukset</button>
+					</li>
+				</ul>
+				<div class="tab-content" id="rules-content">
+					<div class="tab-pane pt-3" id="rules-content-editor" role="tabpanel">
+						<p>Voit muokata nykyisiä juomapeleja tai tehdä uusia. Juomapelisi tallentuvat selaimesi muistiin ja niiden pitäisi pysyä siellä loputtomiin (tai kunnes tyhjennät välimuistin). Voit myös viedä (export) nykyiset juomapelisi .json tiedostoksi Asetukset välilehdellä ja korvata (import) nykyiset.</p>
+						<div class="input-group mt-3">
+							<span class="input-group-text">Muokattava juomapeli</span>
+							<select class="form-select" id="editor-ruleset-selector">
+								<option value="new">Luo uusi juomapeli</option>
+							</select>
+							<button class="btn btn-primary" type="button" onclick="editRuleset()">Muokkaa</button>
+						</div>
+
+						<hr>
+
+						<form id="editor-form">
+
+						</form>
+
+					</div>
+					<div class="tab-pane" id="rules-content-settings" role="tabpanel">
+						<div class="input-group mb-3 mt-3">
+							<span class="input-group-text">Jokerien määrä</span>
+							<input type="number" class="form-control" id="settings-jokeramount" min="0" value="2" required>
+							<button class="btn btn-primary" type="button" onclick="newDeck()">Sekoita pakka</button>
+						</div>
+						<div class="mb-3 form-check form-switch">
+							<input class="form-check-input" type="checkbox" role="switch" id="settings-useanimations" checked>
+							<label class="form-check-label" for="settings-useanimations">Animoi korttien vaihtuminen</label>
+						</div>
+						<div class="mb-3 form-check form-switch">
+							<input class="form-check-input" type="checkbox" role="switch" id="settings-showdescriptions" checked onchange="toggleShowDescriptions()">
+							<label class="form-check-label" for="settings-showdescriptions">Näytä sääntöjen kuvaukset</label>
+						</div>
+						<div class="mb-3 form-check form-switch">
+							<input class="form-check-input" type="checkbox" role="switch" id="settings-twocolumnrules" checked onchange="renderRules()">
+							<label class="form-check-label" for="settings-twocolumnrules">Näytä säännöt kahdessa sarakkeessa</label>
+						</div>
+
+						<input type="file" class="form-control" id="import-rules-file" hidden>
+						<button class="btn btn-primary mb-3" type="button" onclick="importRules()">Import</button>
+						
+						<button class="btn btn-primary mb-3" type="button" onclick="exportRules()">Export</button>
+						<br>
+						<button class="btn btn-danger mb-3" type="button" onclick="restoreDefaults()">Palauta oletus juomapelit</button>
+
+						<hr>
+						<p>Copyright &copy; 2022 Juho 'jeeukko' Häkkinen | <a href="https://github.com/jeeukko/jukonjuomapeli">https://github.com/jeeukko/jukonjuomapeli</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/filesaver.js"></script>
+	<script src="js/juomapeli.js" defer></script>
+	<!-- Default rules are embedded here instead loading a json so this can be used with file:// protocol -->
+	<script type="application/json" id="rules-json">
+[
+	{
+		"name": "Putin juomapeli",
+		"rules": [
+			{
+				"slot": "Ässä",
+				"name": "Antaa",
+				"description": "Päätä kuka juo 3 huikkaa"
+			},
+			{
+				"slot": "2",
+				"name": "Ottaa",
+				"description": "Ota 3 huikkaa"
+			},
+			{
+				"slot": "3",
+				"name": "123",
+				"description": "Kortin nostaja ottaa yhden huikan, vieressä oleva kaksi, seuraava kolme jne"
+			},
+			{
+				"slot": "4",
+				"name": "Putin",
+				"description": "Jokaisen pitää huutaa 'Putin', viimeinen juo 3 huikkaa"
+			},
+			{
+				"slot": "5",
+				"name": "Putin",
+				"description": "Jokaisen pitää huutaa 'Putin', viimeinen juo 3 huikkaa"
+			},
+			{
+				"slot": "6",
+				"name": "Laiva on lastattu",
+				"description": "Kortin nostaja päättää kategorian. Epäonnistuja ottaa 3 huikkaa"
+			},
+			{
+				"slot": "7",
+				"name": "Vesiputous",
+				"description": "Kortin nostaja aloittaa juomisen. Juomisen saa lopettaa vasta kun nostaja on lopettanut"
+			},
+			{
+				"slot": "8",
+				"name": "Riimi",
+				"description": "Joku sanoo sanan ja nostajan pitää keksiä sanalle riimipari"
+			},
+			{
+				"slot": "9",
+				"name": "Sääntö",
+				"description": "Nostaja saa keksiä säännön jota kaikkien noudatettava loppupeli. Rikkomisesta joutuu juomaan 3 huikkaa"
+			},
+			{
+				"slot": "10",
+				"name": "Kysymys",
+				"description": "Nostaja saa kysyä kysymyksen toiselta pelaajalta haluamanaan ajankohtana. Jos kysytty vastaa, hän juo 3 huikkaa. Peliin liittyviä kysymyksiä ei lasketa (ns. meta-kysymys)"
+			},
+			{
+				"slot": "Jätkä",
+				"name": "Taukokortti",
+				"description": "Nostaja saa taukokortin jonka voi käyttää haluamanaan ajankohtana"
+			},
+			{
+				"slot": "Kuningatar",
+				"name": "Huora",
+				"description": "Nostaja joutuu juomaan aina kun joku muukin juo. Kortti säilyy pelin loppuun tai kunnes joku muu saa huorakortin"
+			},
+			{
+				"slot": "Kuningas",
+				"name": "Tarina",
+				"description": "Kerrotaan tarina sanomalla kaikki edelliset sanat sekä 1 sana lisää"
+			}
+		]
+	},
+	{
+		"name": "Juomapeli X",
+		"rules": [
+			{
+				"slot": "Ässä",
+				"name": "Huora",
+				"description": "Nostaja joutuu juomaan aina kun joku muukin juo. Kortti säilyy pelin loppuun tai kunnes joku muu saa huorakortin"
+			},
+			{
+				"slot": "2",
+				"name": "Riimi",
+				"description": "Joku sanoo sanan ja nostajan pitää keksiä sanalle riimipari"
+			},
+			{
+				"slot": "3",
+				"name": "3 Huikkaa",
+				"description": "Ota 3 huikkaa"
+			},
+			{
+				"slot": "4",
+				"name": "Kysymys",
+				"description": "Nostaja saa kysyä kysymyksen toiselta pelaajalta haluamanaan ajankohtana. Jos kysytty vastaa, hän juo 3 huikkaa. Peliin liittyviä kysymyksiä ei lasketa (ns. meta-kysymys)"
+			},
+			{
+				"slot": "5",
+				"name": "Peukku",
+				"description": "Viimeinen joka nostaa peukun juo 3 huikkaa"
+			},
+			{
+				"slot": "6",
+				"name": "Taukokortti",
+				"description": "Nostaja saa taukokortin jonka voi käyttää haluamanaan ajankohtana"
+			},
+			{
+				"slot": "7",
+				"name": "Vesiputous",
+				"description": "Kortin nostaja aloittaa juomisen. Juomisen saa lopettaa vasta kun nostaja on lopettanut"
+			},
+			{
+				"slot": "8",
+				"name": "Totuus",
+				"description": "Nostajalta kysytään kysymys johon vastattava tai juotava 3 huikkaa"
+			},
+			{
+				"slot": "9",
+				"name": "Tehtävä",
+				"description": "Nostajelle keksitään tehtävä joka suoritettava tai juotava 3 huikkaa"
+			},
+			{
+				"slot": "10",
+				"name": "En ole koskaan",
+				"description": "Nostaja sanoo \"En ole koskaa X\", kaikki jotka ovat tehneet X juovat 3 huikkaa"
+			},
+			{
+				"slot": "Jätkä",
+				"name": "En ole koskaan",
+				"description": "Nostaja sanoo \"En ole koskaa X\", kaikki jotka ovat tehneet X juovat 3 huikkaa"
+			},
+			{
+				"slot": "Kuningatar",
+				"name": "Sääntö",
+				"description": "Nostaja saa keksiä säännön jota kaikkien noudatettava loppupeli. Rikkomisesta joutuu juomaan 3 huikkaa"
+			},
+			{
+				"slot": "Kuningas",
+				"name": "Laiva on lastattu",
+				"description": "Mokaaja juo 3 huikkaa"
+			},
+			{
+				"slot": "Jokeri",
+				"name": "Valitse itse",
+				"description": "Valitse haluamasi sääntö ja toimi sen mukaisesti"
+			}
+		]
+	}
+]
+	</script>
+</body>
+
+</html>
