@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Jukon Juomapeli</title>
-	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/juomapeli.css">
 </head>
 
@@ -61,6 +61,10 @@
 							<input class="form-check-input" type="checkbox" role="switch" id="settings-twocolumnrules" checked onchange="renderRules()">
 							<label class="form-check-label" for="settings-twocolumnrules">Näytä säännöt kahdessa sarakkeessa</label>
 						</div>
+						<div class="mb-3 form-check form-switch">
+							<input class="form-check-input" type="checkbox" role="switch" id="settings-darkmode" checked onchange="updateDarkmode()">
+							<label class="form-check-label" for="settings-darkmode">Tumma teema</label>
+						</div>
 
 						<input type="file" class="form-control" id="import-rules-file" hidden>
 						<button class="btn btn-primary mb-3" type="button" onclick="importRules()">Import</button>
@@ -70,7 +74,7 @@
 						<button class="btn btn-danger mb-3" type="button" onclick="restoreDefaults()">Palauta oletus juomapelit</button>
 
 						<hr>
-						<p>Copyright &copy; 2022 Juho 'jeeukko' Häkkinen | <a href="https://github.com/jeeukko/jukonjuomapeli">https://github.com/jeeukko/jukonjuomapeli</a></p>
+						<p>Copyright &copy; 2023 Juho 'jeeukko' Häkkinen | <a href="https://github.com/jeeukko/jukonjuomapeli">https://github.com/jeeukko/jukonjuomapeli</a></p>
 					</div>
 				</div>
 			</div>
@@ -228,6 +232,17 @@
 		]
 	}
 ]
+	</script>
+	<script>
+		function updateDarkmode() {
+			var toggle = document.getElementById("settings-darkmode");
+			if (toggle.checked) {
+				document.documentElement.setAttribute('data-bs-theme', 'dark')
+			} else {
+				document.documentElement.setAttribute('data-bs-theme', 'light')
+			}
+		}
+		document.addEventListener("DOMContentLoaded", updateDarkmode);
 	</script>
 </body>
 
