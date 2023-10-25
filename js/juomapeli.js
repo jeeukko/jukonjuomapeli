@@ -233,9 +233,7 @@ function newDeck() {
 	}
 
 	var jokers = parseInt(document.getElementById("settings-jokeramount").value, 10);
-	for (let i = 0; i < jokers; i++) {
-		deck.push(i % 2 == 0 ? "black_joker" : "red_joker");
-	}
+	deck = deck.concat(Array(Math.ceil(jokers / 2)).fill("black_joker"), Array(Math.floor(jokers / 2)).fill("red_joker"));
 
 	deck = shuffle(deck);
 
