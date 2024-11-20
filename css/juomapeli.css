@@ -12,6 +12,12 @@
 	image-rendering: pixelated;
 }
 
+.rule-highlight.active {
+	border-radius: var(--bs-border-radius) !important;
+	--bs-border-opacity: 1;
+	outline: var(--bs-border-width) var(--bs-border-style) rgba(var(--bs-primary-rgb), var(--bs-border-opacity)) !important;
+}
+
 
 @keyframes flip-vertical-right {
 	0% {

@@ -18,6 +18,23 @@ var slots = [
 	"Jokeri",
 ];
 
+var rankstoslots = {
+	"ace": "Ässä",
+	"2": "2",
+	"3": "3",
+	"4": "4",
+	"5": "5",
+	"6": "6",
+	"7": "7",
+	"8": "8",
+	"9": "9",
+	"10": "10",
+	"jack": "Jätkä",
+	"queen": "Kuningatar",
+	"king": "Kuningas",
+	"joker": "Jokeri",
+};
+
 function init() {
 	if (localStorage.getItem("rules")) {
 		rules = JSON.parse(localStorage.getItem("rules"));
@@ -101,7 +118,7 @@ function renderRuleset(id, ruleset) {
 		if (i == split && twocolumn) {
 			html += `</div><div class="col">`;
 		}
-		html += `<p><strong>${rule.slot}</strong>: ${rule.name} <small class="rule-description ${extraclass}">${rule.description}</small></p>`;
+		html += `<p class="rule-slot rule-slot-${rule.slot}"><strong>${rule.slot}</strong>: ${rule.name} <small class="rule-description ${extraclass}">${rule.description}</small></p>`;
 	}
 	html += `</div></div></div>`;
 	tmp = document.createElement("div");
@@ -185,17 +202,34 @@ function newCard() {
 	}
 
 	var card = deck.shift();
+	if (card.includes("joker")) {
+		var rank = "joker";
+	} else {
+		var rank = card.split("_")[0];
+	}
 
 	if (document.getElementById("settings-useanimations").checked) {
 		document.getElementById("card-img").classList.add("flip");
 		setTimeout(function () {
 			document.getElementById("card-img").src = "img/cards/" + card + ".png";
+			document.querySelectorAll(`.rule-slot`).forEach(function (e) {
+				e.classList.remove("active")
+			});
+			document.querySelectorAll(`.rule-slot.rule-slot-${rankstoslots[rank]}`).forEach(function (e) {
+				e.classList.add("active")
+			});
 		}, 150);
 		setTimeout(function () {
 			document.getElementById("card-img").classList.remove("flip");
 		}, 300);
 	} else {
 		document.getElementById("card-img").src = "img/cards/" + card + ".png";
+		document.querySelectorAll(`.rule-slot`).forEach(function (e) {
+			e.classList.remove("active")
+		});
+		document.querySelectorAll(`.rule-slot.rule-slot-${rankstoslots[rank]}`).forEach(function (e) {
+			e.classList.add("active")
+		});
 	}
 
 	updateDeckinfo();
@@ -256,6 +290,18 @@ function toggleShowDescriptions() {
 			elem.classList.add("d-none");
 		}
 	});
+}
+
+function updateHighlight() {
+	if (document.getElementById("settings-highlight").checked) {
+		document.querySelectorAll(".rule-slot").forEach(function (e) {
+			e.classList.add("rule-highlight")
+		});
+	} else {
+		document.querySelectorAll(".rule-slot").forEach(function (e) {
+			e.classList.remove("rule-highlight")
+		});
+	}
 }
 
 function shuffle(array) {
